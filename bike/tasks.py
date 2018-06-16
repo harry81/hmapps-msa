@@ -39,6 +39,25 @@ def celery_bike_infos_to_s3(self,  **kwargs):
     default_storage.save(content=ContentFile(json.dumps(statecenters)), name=filename)
 
 
+def event_bike_infos_to_s3(self):
+    bikes = get_bike_info()
+    statecenters = []
+
+    for bike in bikes:
+        filtered = {k: v for k, v in
+                    bike.items() if k in [
+                        'stationId', 'rackTotCnt', 'parkingBikeTotCnt',
+                        'stationLatitude', 'stationLongitude', 'stationName']}
+
+        snaked_bike = camel_to_snake_as_dict(filtered)
+        statecenters.append(snaked_bike)
+
+    filename = "/bike/%s/statecenter_%s.json" % (datetime.strftime(datetime.now(), "%Y%m"),
+                                                 datetime.strftime(datetime.now(), "%Y%m%d_%H%M"))
+    print("filename:", filename)
+    default_storage.save(content=ContentFile(json.dumps(statecenters)), name=filename)
+
+
 def celery_bike_report(self,  **kwargs):
 
     subject = '%s - Daily bike report' % datetime.now().strftime('%Y-%m-%d')

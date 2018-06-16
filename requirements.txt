@@ -12,7 +12,8 @@ django-filter==1.1.0
 requests==2.19.1
 django-model-utils==3.1.2
 xmltodict==0.10.2
-boto3==1.7.39
+boto==2.48.0
+boto3==1.7.40
 zappa==0.46.1
 lxml==4.2.1
 zappa-django-utils==0.4.0

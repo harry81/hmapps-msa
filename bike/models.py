@@ -13,7 +13,7 @@ class Center(TimeStampedModel):
 
 
 class StateCenter(TimeStampedModel):
-    center = models.ForeignKey(Center, related_name="state", null=True, blank=True, on_delete=True)
+    center = models.ForeignKey(Center, related_name="state", null=True, blank=True)
     parking_bike_tot_cnt = models.IntegerField('현재 주차 수', db_index=True)
     rack_tot_cnt = models.IntegerField('총 주차 가능수', db_index=True)
 

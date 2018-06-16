@@ -119,7 +119,7 @@ class Deal(TimeStampedModel):
     area_nm = models.CharField(u'지역이름', max_length=32, default='')
     aptfno = models.CharField(u'층', max_length=32)
     origin = models.CharField(u'추출경로', max_length=256, null=True, blank=True)
-    location = models.ForeignKey(Location, related_name="deals", null=True, blank=True, on_delete=True)
+    location = models.ForeignKey(Location, related_name="deals", null=True, blank=True)
 
     def __unicode__(self):
         return "%s %s" % (self.bldg_nm, self.bldg_area)

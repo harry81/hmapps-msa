@@ -92,3 +92,10 @@ class ArticlesTestCase(TestCase):
 
     def tearDown(self):
         self.moto.stop()
+
+
+class NaverArticlesTestCase(TestCase):
+    def test_load_cafe_article(self):
+        from water.utils import load_cafe_article
+        load_cafe_article()
+        self.assertTrue(True)

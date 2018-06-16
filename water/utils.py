@@ -185,4 +185,12 @@ def _parse_mk(ele):
 
 def load_cafe_article():
     rows = naver.search()
-    print(rows[0].get("title"))
+    title = rows[0].get("title")
+    filename = "%s/%s.%s" % ('articles',
+                             datetime.now().strftime("%Y%m%d-%H%M%S"), "json")
+
+    fp = default_storage.open('%s' % (filename), 'w')
+    fp.write(rows)
+    fp.close()
+
+    print("%s - %s" % (filename, title))
