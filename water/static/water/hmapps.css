@@ -1,0 +1,12 @@
+.title {
+    font-weight: bold;
+}
+.text {
+    white-space: pre-wrap;
+    display: block;
+    text-align: justify;
+    margin-top: 20px;
+    line-height: 2em;
+    color: #222;
+    font-size: 16px;
+}
