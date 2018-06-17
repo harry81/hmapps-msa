@@ -13,6 +13,7 @@ admin.site.register(Item, ItemAdmin)
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'tag_list', 'username', 'created_at')
+    search_fields = ('tags__name', )
 
     def get_queryset(self, request):
         return super(ArticleAdmin, self).get_queryset(request).prefetch_related('tags')

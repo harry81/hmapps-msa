@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from taggit.managers import TaggableManager
 
+STOP_WORDS = ["팝니다", "새제품", "미개봉", "수원", "안녕", "직거래", "남성", "여성"]
 
 class Item(models.Model):
     PUBLISHER_CHOICES = (
@@ -49,5 +50,7 @@ class Article(models.Model):
     tags = TaggableManager()
 
     def do_tag(self, taggers=[]):
+        taggers = [tagger for tagger in taggers if tagger not in STOP_WORDS and len(tagger) > 1]
+
         for tagger in taggers:
             self.tags.add(tagger)

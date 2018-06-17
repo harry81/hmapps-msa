@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 from io import BytesIO
 from urllib.parse import urlparse
@@ -8,8 +9,7 @@ from dateutil.parser import parse as parse
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMultiAlternatives
 from django.db import IntegrityError
-from konlpy.tag import Hannanum
-from konlpy.utils import pprint
+from django.db.models import Count
 from naver_api.naver_search import Naver
 
 from lxml import etree
@@ -18,8 +18,7 @@ from .models import Article, Item
 
 naver = Naver()
 
-hannanum = Hannanum()
-
+SPLIT_CHAR = '()$#<>+/_[]\\'
 
 def _get_filename(item=None):
 
@@ -220,7 +219,7 @@ def fetch_article():
 
         content = fp.read()
         rows = json.loads(content)
-
+        print(ele)
         try:
             Article.objects.bulk_create([Article(**row) for row in rows])
         except IntegrityError:
@@ -232,9 +231,39 @@ def tag_article():
     주기 : 하루
     작업 : 게시물의 명사를 기준으로 테그한다.
     """
+    from konlpy.tag import Hannanum
+    hannanum = Hannanum()
+
     for article in Article.objects.all():
         try:
-            article.do_tag([tag for tag in hannanum.nouns(article.title) if len(tag) > 1])
+            tags = [tag for tag in hannanum.nouns(article.title) if len(tag) > 1]
+
+            for tag in tags[:10]:
+                splits = re.split(r',', tag)
+
+                tags.remove(tag)
+
+                if len(splits) > 1:
+                    for split in splits:
+                        tags.append(split.strip(SPLIT_CHAR))
+                else:
+                    tags.append(tag.strip(SPLIT_CHAR))
+
+            article.do_tag(tags)
+
         except Exception as e:
             print(hannanum.nouns(article.title))
             print(e)
+
+
+def tag_result():
+    black_list = ['판매', '팝니다', '공식앱', '새상품',
+                  '정품', '새제품', '미개봉', '삼성', '수원', '택포', '가능', '사이즈', '중고나라',
+                  '멤버', '가입',
+                  '서울', '안녕', '세트', '직거래', '대전', '부산', '매입', '5만원', '인천', '처분',
+                  '구매',
+                  '대리예매', '남성', '급처', '저렴', '2만원', '만원', '무료배송', ''
+    ]
+
+    for tag in Article.objects.exclude(tags__name__in=black_list).values('tags__name').annotate(total=Count('tags__name')).order_by('-total')[:100]:
+        print(tag.get('tags__name'), tag.get('total'))
