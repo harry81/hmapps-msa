@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+import json
 from datetime import datetime
 from io import BytesIO
 from urllib.parse import urlparse
@@ -7,11 +7,12 @@ import requests
 from dateutil.parser import parse as parse
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMultiAlternatives
+from django.db import IntegrityError
 from naver_api.naver_search import Naver
 
 from lxml import etree
 
-from .models import Item
+from .models import Article, Item
 
 naver = Naver()
 
@@ -184,13 +185,40 @@ def _parse_mk(ele):
 
 
 def load_cafe_article():
+    """
+    주기 : 1분
+    작업 : 네이버 카페글의 타이틀을 s3에 저장한다
+    """
     rows = naver.search()
     title = rows[0].get("title")
+    created_at = rows[0].get("created_at")
     filename = "%s/%s.%s" % ('articles',
-                             datetime.now().strftime("%Y%m%d-%H%M%S"), "json")
+                             datetime.now().strftime("%Y%m%d/%H%M%S"), "json")
 
     fp = default_storage.open('%s' % (filename), 'w')
-    fp.write(rows)
+    fp.write(json.dumps(rows))
     fp.close()
 
-    print("%s - %s" % (filename, title))
+    print("%s - %s : %s" % (filename, created_at, title))
+
+
+def fetch_article():
+    """
+    주기 : 하루
+    작업 : s3에 저장된 글을 임시 공간에 저장한다.
+    """
+    dir_name = 'articles/%s/' % datetime.now().strftime("%Y%m%d")
+
+    for ele in default_storage.listdir(dir_name)[1]:
+        full_path = dir_name + ele
+        default_storage.exists(full_path)
+        fp = default_storage.open(full_path, 'r')
+
+        content = fp.read()
+        rows = json.loads(content)
+
+        import ipdb; ipdb.set_trace()
+        try:
+            Article.objects.bulk_create([Article(**row) for row in rows])
+        except IntegrityError:
+            pass

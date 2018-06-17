@@ -1,16 +1,18 @@
-import requests_mock
-import os
-import boto
 import json
-from django.core import mail
+import os
 from datetime import datetime
-from django.test import TestCase
-from water.utils import (fetch_news_to_S3,
-                         load_from_S3, send_email_for_fetched_articles,
-                         insert_news_to_db)
-from water.tasks import celery_send_email_for_fetched_articles
+
+from django.core import mail
 from django.core.files.storage import default_storage
+from django.test import TestCase
+
+import boto
+import requests_mock
 from moto import mock_s3
+from water.tasks import celery_send_email_for_fetched_articles
+from water.utils import (fetch_news_to_S3, insert_news_to_db,
+                         load_cafe_article, load_from_S3, fetch_article,
+                         send_email_for_fetched_articles)
 
 from .models import Item
 
@@ -96,6 +98,9 @@ class ArticlesTestCase(TestCase):
 
 class NaverArticlesTestCase(TestCase):
     def test_load_cafe_article(self):
-        from water.utils import load_cafe_article
         load_cafe_article()
+        self.assertTrue(True)
+
+    def test_fetch_article(self):
+        fetch_article()
         self.assertTrue(True)

@@ -36,3 +36,11 @@ class Item(models.Model):
             self.publish_at = self.publish_at[0]
 
         super(Item, self).save(*args, **kwargs)
+
+
+class Article(models.Model):
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=256, blank=True)
+    username = models.CharField(max_length=256, blank=True)
+    created_at = models.DateTimeField(db_index=True,
+                                      default=timezone.now, blank=True)

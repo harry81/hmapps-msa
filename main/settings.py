@@ -128,7 +128,7 @@ DATABASES = {
 
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-AWS_STORAGE_BUCKET_NAME = 'hmapps'
+AWS_STORAGE_BUCKET_NAME = os.getenv('BUCKET_NAME', '')
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
@@ -248,3 +248,4 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 print ("%s - [%s]" % ("DATABASES", DATABASES['default']['NAME']))
+print("AWS_STORAGE_BUCKET_NAME: %s" % AWS_STORAGE_BUCKET_NAME)
