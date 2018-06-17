@@ -11,7 +11,7 @@ import requests_mock
 from moto import mock_s3
 from water.tasks import celery_send_email_for_fetched_articles
 from water.utils import (fetch_news_to_S3, insert_news_to_db,
-                         load_cafe_article, load_from_S3, fetch_article,
+                         load_cafe_article, load_from_S3, fetch_article, tag_article,
                          send_email_for_fetched_articles)
 
 from .models import Item
@@ -103,4 +103,8 @@ class NaverArticlesTestCase(TestCase):
 
     def test_fetch_article(self):
         fetch_article()
+        self.assertTrue(True)
+
+    def test_tag_article(self):
+        tag_article()
         self.assertTrue(True)

@@ -8,6 +8,8 @@ from dateutil.parser import parse as parse
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMultiAlternatives
 from django.db import IntegrityError
+from konlpy.tag import Hannanum
+from konlpy.utils import pprint
 from naver_api.naver_search import Naver
 
 from lxml import etree
@@ -15,6 +17,8 @@ from lxml import etree
 from .models import Article, Item
 
 naver = Naver()
+
+hannanum = Hannanum()
 
 
 def _get_filename(item=None):
@@ -199,13 +203,13 @@ def load_cafe_article():
     fp.write(json.dumps(rows))
     fp.close()
 
-    print("%s - %s : %s" % (filename, created_at, title))
+    print("%s : %s" % (created_at, title))
 
 
 def fetch_article():
     """
     주기 : 하루
-    작업 : s3에 저장된 글을 임시 공간에 저장한다.
+    작업 : s3에 저장된 글을 테이블에 저장한다.
     """
     dir_name = 'articles/%s/' % datetime.now().strftime("%Y%m%d")
 
@@ -217,8 +221,20 @@ def fetch_article():
         content = fp.read()
         rows = json.loads(content)
 
-        import ipdb; ipdb.set_trace()
         try:
             Article.objects.bulk_create([Article(**row) for row in rows])
         except IntegrityError:
             pass
+
+
+def tag_article():
+    """
+    주기 : 하루
+    작업 : 게시물의 명사를 기준으로 테그한다.
+    """
+    for article in Article.objects.all():
+        try:
+            article.do_tag([tag for tag in hannanum.nouns(article.title) if len(tag) > 1])
+        except Exception as e:
+            print(hannanum.nouns(article.title))
+            print(e)

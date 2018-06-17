@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'storages',
     'corsheaders',
     'django_filters',
+    'taggit',
 
     'water',
     'earth',

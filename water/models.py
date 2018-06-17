@@ -1,6 +1,8 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
-from django.contrib.postgres.fields import ArrayField
+
+from taggit.managers import TaggableManager
 
 
 class Item(models.Model):
@@ -44,3 +46,8 @@ class Article(models.Model):
     username = models.CharField(max_length=256, blank=True)
     created_at = models.DateTimeField(db_index=True,
                                       default=timezone.now, blank=True)
+    tags = TaggableManager()
+
+    def do_tag(self, taggers=[]):
+        for tagger in taggers:
+            self.tags.add(tagger)

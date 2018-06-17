@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.11.13
 dj-database-url==0.4.2
 django-debug-toolbar==1.8
 psycopg2==2.7.4
@@ -19,4 +19,5 @@ lxml==4.2.1
 zappa-django-utils==0.4.0
 raven==5.32.0
 pip==9.0.3
+django-taggit==0.22.2
 -e git://github.com/harry81/naver_api.git#egg=naver_api
