@@ -22,8 +22,6 @@ cache.set('DATA_KEY', data_go_kr_key)
 
 
 s3 = boto3.client('s3',
-                  aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                   config=Config(signature_version='s3v4'))
 
 bucket_name = 'hm-deals'

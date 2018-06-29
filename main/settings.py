@@ -25,15 +25,13 @@ SECRET_KEY = 'n5_or^s%d^snbgo=x76h7=bw$$9=!9=jo2qj2(^9#e9nq8ld0t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'hmapps.gv34rimdzh.ap-northeast-2.elasticbeanstalk.com',
-    'localhost:4200',
-    'hmapps.healworld.co.kr',
-    'earth.healworld.co.kr',
     'localhost',
     '.ap-northeast-2.amazonaws.com',
-    '127.0.0.1:8100'
+    '127.0.0.1:8100',
+    '*'
 )
 
 ALLOWED_HOSTS = CORS_ORIGIN_WHITELIST
@@ -68,9 +66,6 @@ RAVEN_CONFIG = {
     'dsn': "https://%s@sentry.io/127326" % os.getenv('RAVEN_DSN'),
 }
 
-REGION_NAME = 'ap-northeast-2'
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,13 +122,10 @@ DATABASES = {
 }
 
 
-
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_STORAGE_BUCKET_NAME = os.getenv('BUCKET_NAME', '')
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
-
+REGION_NAME = 'ap-northeast-2'
 S3_USE_SIGV4 = True
 AWS_S3_HOST = 's3.ap-northeast-2.amazonaws.com'
 
@@ -248,5 +240,5 @@ EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-print ("%s - [%s]" % ("DATABASES", DATABASES['default']['NAME']))
-print("AWS_STORAGE_BUCKET_NAME: %s" % AWS_STORAGE_BUCKET_NAME)
+# print ("%s - [%s]" % ("DATABASES", DATABASES['default']['NAME']))
+# print("AWS_STORAGE_BUCKET_NAME: %s" % AWS_STORAGE_BUCKET_NAME)
